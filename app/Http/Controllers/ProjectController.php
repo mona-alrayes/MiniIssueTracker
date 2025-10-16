@@ -13,7 +13,7 @@ class ProjectController extends Controller
      */
     public function index()
     {
-        //
+        return self::paginated(Project::paginate(10) , null ,'projects been retrived successfully', 200);
     }
 
     /**
@@ -29,7 +29,7 @@ class ProjectController extends Controller
      */
     public function show(Project $project)
     {
-        //
+        return self::success($project , 'project been retrived successfully', 200);
     }
 
     /**
@@ -45,6 +45,7 @@ class ProjectController extends Controller
      */
     public function destroy(Project $project)
     {
-        //
+        $project->delete();
+        return self::success(null , 'project been deleted successfully', 200);
     }
 }
