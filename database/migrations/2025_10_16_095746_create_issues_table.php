@@ -22,10 +22,10 @@ return new class extends Migration
             $table->string('priority')->default('medium');
             $table->foreignId('project_id')->constrained()->onDelete('cascade');
             $table->foreignId('created_by')->constrained('users')->onDelete('cascade');
-            $table->foreignId('assigned_to')->constrained('users')->onDelete('null');
+            $table->foreignId('assigned_to')->nullable()->constrained('users')->onDelete('set null');
             $table->string('code')->unique();
             $table->json('due_window')->nullable();
-            $table->timedate('status_change_at')->nullable();
+            $table->timestamp('status_change_at')->nullable();
         });
     }
 

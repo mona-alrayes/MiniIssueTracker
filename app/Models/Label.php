@@ -9,4 +9,13 @@ class Label extends Model
 {
     /** @use HasFactory<\Database\Factories\LabelFactory> */
     use HasFactory;
+
+    protected $fillable = [
+        'name',
+        'color',
+    ];
+
+    public function issues(){
+        return $this->belongsToMany(Issue::class , 'issue_label');
+    }
 }

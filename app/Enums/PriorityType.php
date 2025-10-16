@@ -2,7 +2,7 @@
 
 namespace App\Enums;
 
-enum StatusType: string 
+enum PriorityType: string 
 {
     case HIGHEST = 'highest';
     case HIGH = 'high';
