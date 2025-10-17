@@ -13,7 +13,7 @@ class LabelController extends Controller
      */
     public function index()
     {
-        //
+        return self::paginated(Label::paginate(10) , null ,'Labels been retrived successfully', 200);
     }
 
     /**
@@ -21,7 +21,8 @@ class LabelController extends Controller
      */
     public function store(StoreLabelRequest $request)
     {
-        //
+        $label = Label::create($request->validated());
+        return self::success($label , 'label been created successfully', 201);
     }
 
     /**
@@ -29,7 +30,7 @@ class LabelController extends Controller
      */
     public function show(Label $label)
     {
-        //
+        return self::success($label , 'label been retrived successfully', 200);
     }
 
     /**
@@ -37,7 +38,8 @@ class LabelController extends Controller
      */
     public function update(UpdateLabelRequest $request, Label $label)
     {
-        //
+        $label->update($request->validated());
+        return self::success($label , 'label been updated successfully', 200);
     }
 
     /**
@@ -45,6 +47,7 @@ class LabelController extends Controller
      */
     public function destroy(Label $label)
     {
-        //
+        $label->delete();
+        return self::success(null , 'label been deleted successfully', 200);
     }
 }
