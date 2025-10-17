@@ -46,23 +46,32 @@ class User extends Authenticatable
         ];
     }
 
-    public function comments(){
+    public function comments()
+    {
         return $this->hasMany(Comment::class);
     }
 
-    public function created_issues(){
+    public function created_issues()
+    {
         return $this->hasMany(Issue::class, 'created_by');
     }
 
-    public function assigned_issues(){
+    public function assigned_issues()
+    {
         return $this->hasMany(Issue::class, 'assigned_to');
     }
 
-    public function projects(){
+    public function projects()
+    {
         return $this->belongsToMany(Project::class, 'project_user')->withPivot('role', 'contribution_hours', 'last_activity');
     }
 
     
-
-
+    public function scopeWithCompletedIssuesCount($query)
+    {
+        return $query->withCount([
+            'assigned_issues as completed_issues_count' => fn($q) =>
+                $q->where('status', 'completed'),
+        ]);
+    }
 }

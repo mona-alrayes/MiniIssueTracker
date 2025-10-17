@@ -16,9 +16,7 @@ return new class extends Migration
             $table->timestamps();
             $table->string('title');
             $table->text('description')->nullable();
-            //$table->enum('status', ['open', 'in_progress', 'closed'])->default('open');
             $table->string('status')->default('open');
-            //$table->enum('priority', ['low', 'medium', 'high' , 'highest'])->default('medium');
             $table->string('priority')->default('medium');
             $table->foreignId('project_id')->constrained()->onDelete('cascade');
             $table->foreignId('created_by')->constrained('users')->onDelete('cascade');

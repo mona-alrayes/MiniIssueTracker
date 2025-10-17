@@ -17,19 +17,21 @@ class Project extends Model
         'code',
     ];
 
-    public function issues(){
+    public function issues()
+    {
         return $this->hasMany(Issue::class);
     }
 
-    public function users(){
+    public function users()
+    {
         return $this->belongsToMany(User::class, 'project_user')->withPivot('role', 'contribution_hours', 'last_activity');
     }
 
-      // Example: scope that returns projects with most open issues
+    // Example: scope that returns projects with most open issues
     public function scopeMostOpen(Builder $q)
     {
         return $q->withCount(['issues as open_issues_count' => function ($q) {
-            $q->whereIn('status', ['open','in_progress','blocked']);
+            $q->whereIn('status', ['open', 'in_progress']);
         }])->orderByDesc('open_issues_count');
     }
 
@@ -38,5 +40,10 @@ class Project extends Model
     {
         $this->attributes['code'] = strtoupper($value);
     }
-    
+
+    // Local scope to get projects with opened issues
+    public function scopeOpenedIssues(Builder $q)
+    {
+        return $q->whereInRelation('issues', 'status', ['open', 'in_progress']);
+    }
 }
