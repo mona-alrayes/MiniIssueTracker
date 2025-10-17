@@ -71,4 +71,15 @@ abstract class Controller
         ], $status);
     }
 
+    /**
+     * Resolve project from route with model binding
+     */
+    protected function resolveProject($project)
+    {
+        if ($project instanceof Project) {
+            return $project;
+        }
+        
+        return Project::findOrFail($project);
+    }
 }

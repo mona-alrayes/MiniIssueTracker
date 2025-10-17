@@ -99,4 +99,13 @@ class User extends Authenticatable
                 $q->where('status', 'completed'),
         ]);
     }
+
+    /**
+     * Get last activity timestamp for a project
+     */
+    public function currentProjectActivity(Project $project): ?Carbon
+    {
+        return $this->projects()->where('project_id', $project->id)
+            ->first()?->pivot?->last_activity;
+    }
 }
