@@ -33,5 +33,10 @@ class Project extends Model
         }])->orderByDesc('open_issues_count');
     }
 
+    // mutator to ensure project code is always uppercase
+    public function setCodeAttribute($value)
+    {
+        $this->attributes['code'] = strtoupper($value);
+    }
     
 }
