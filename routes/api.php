@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ProjectController;
+use App\Http\Controllers\ProjectUserController;
 
 // Route::get('/user', function (Request $request) {
 //     return $request->user();
@@ -19,6 +20,9 @@ Route::apiResource('issues' , IssueController::class);
 Route::apiResource('labels', LabelController::class);
 
 Route::middleware('auth:sanctum')->group(function () {
+    Route::post('projects/{project}/users', [ProjectUserController::class, 'addingUserToProject']);
+    Route::delete('projects/{project}/users', [ProjectUserController::class, 'removingUserFromProject']);
+    
     Route::post('projects/{project}/issues/{issue}/labels', [IssueLabelController::class, 'attach']);
     Route::delete('projects/{project}/issues/{issue}/labels/{label}', [IssueLabelController::class, 'detach']);
     Route::put('projects/{project}/issues/{issue}/labels', [IssueLabelController::class, 'sync']);

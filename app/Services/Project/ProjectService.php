@@ -7,30 +7,78 @@ use App\Models\Project;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
 
+/**
+ * Service layer for project-related operations
+ */
 class ProjectService
 {
+    /**
+     * Create a new project
+     * 
+     * @param array $data Project data
+     * @return Project Newly created project
+     */
     public function createProject(array $data): Project
     {
         return Project::create($data);
     }
 
+    /**
+     * Update an existing project
+     * 
+     * @param Project $project Project to update
+     * @param array $data Updated project data
+     * @return Project Updated project
+     */
     public function updateProject(Project $project, array $data): Project
     {
         $project->update($data);
         return $project;
     }
 
-    public function attachUserstoProject(Project $project, array $data)
+    /**
+     * Attach a user to a project with specified role
+     * 
+     * @param Project $project The project to attach to
+     * @param array $userData ['user_id' => int, 'role' => string]
+     * @return bool True on success
+     * @throws ProjectOperationException
+     */
+    public function attachUsersToProject(Project $project, array $userData)
     {
-        try{
-         return DB::transaction(function () use ($project, $data) {
-            $project->users()->sync($data);
-            return $project->load('users')->users;
-         });
-        }catch(Exception $e){
-        throw new ProjectOperationException('Failed to attach users to project');
+        try {
+            return DB::transaction(function () use ($project, $userData) {
+                $project->users()->attach([
+                    'project_id' => $project->id,
+                    'user_id' => $userData['user_id'],
+                    'role' => $userData['role']
+                ]);
+                return true;
+            });
+        } catch (\Exception $e) {
+            throw new ProjectOperationException('Failed to attach user to project');
         }
-   }
+    }
+
+    /**
+     * Detach a user from a project
+     * 
+     * @param Project $project The project to detach from
+     * @param int $userId ID of user to detach
+     * @return bool True on success
+     * @throws ProjectOperationException
+     */
+    public function detachUserFromProject(Project $project, int $userId)
+    {
+        try {
+            return DB::transaction(function () use ($project, $userId) {
+                $project->users()->detach($userId);
+                return true;
+            });
+        } catch (\Exception $e) {
+            throw new ProjectOperationException('Failed to detach user from project');
+        }
+    }
 
     /**
      * Record API contribution time 

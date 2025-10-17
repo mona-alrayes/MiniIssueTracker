@@ -9,7 +9,7 @@ use App\Services\Project\ProjectService;
 class GenerateContributionReports extends Command
 {
     protected $signature = 'reports:contributions';
-    protected $description = 'Generate weekly contribution reports';
+    protected $description = 'Generate daily contribution reports';
 
     public function handle(ProjectService $service)
     {

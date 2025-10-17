@@ -20,7 +20,7 @@ class Kernel extends ConsoleKernel
 
         $schedule->command('reports:contributions')
             ->daily()
-            ->at('08:00')
+            ->at('08:00');
     }
 
     protected function commands()

@@ -50,4 +50,5 @@ class ProjectController extends Controller
         $project->delete();
         return self::success(null , 'project been deleted successfully', 200);
     }
+
 }
