@@ -46,27 +46,52 @@ class User extends Authenticatable
         ];
     }
 
+    /**
+     * Get all comments created by the user
+     * 
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany<Comment>
+     */
     public function comments()
     {
         return $this->hasMany(Comment::class);
     }
 
+    /**
+     * Get all issues created by the user
+     * 
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany<Issue>
+     */
     public function created_issues()
     {
         return $this->hasMany(Issue::class, 'created_by');
     }
 
+    /**
+     * Get all issues assigned to the user
+     * 
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany<Issue>
+     */
     public function assigned_issues()
     {
         return $this->hasMany(Issue::class, 'assigned_to');
     }
 
+    /**
+     * Get all projects the user belongs to
+     * 
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany<Project>
+     */
     public function projects()
     {
         return $this->belongsToMany(Project::class, 'project_user')->withPivot('role', 'contribution_hours', 'last_activity');
     }
 
-    
+    /**
+     * Scope a query to include the count of completed issues
+     * 
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
     public function scopeWithCompletedIssuesCount($query)
     {
         return $query->withCount([

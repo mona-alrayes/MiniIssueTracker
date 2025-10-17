@@ -15,6 +15,11 @@ class Label extends Model
         'color',
     ];
 
+    /**
+     * Get all issues associated with the label
+     * 
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany<Issue>
+     */
     public function issues(){
         return $this->belongsToMany(Issue::class , 'issue_label');
     }

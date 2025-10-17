@@ -35,50 +35,95 @@ class Issue extends Model
         'due_window' => DueWindowCast::class,
     ];
 
+    /**
+     * Get all comments for the issue
+     * 
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany<Comment>
+     */
     public function comments()
     {
         return $this->hasMany(Comment::class);
     }
 
+    /**
+     * Get the project the issue belongs to
+     * 
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo<Project>
+     */
     public function project()
     {
         return $this->belongsTo(Project::class);
     }
 
+    /**
+     * Get the user who created the issue
+     * 
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo<User>
+     */
     public function creator()
     {
         return $this->belongsTo(User::class, 'created_by');
     }
 
+    /**
+     * Get the user assigned to the issue
+     * 
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo<User>
+     */
     public function assignee()
     {
         return $this->belongsTo(User::class, 'assigned_to');
     }
 
+    /**
+     * Get all labels associated with the issue
+     * 
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany<Label>
+     */
     public function labels()
     {
         return $this->belongsToMany(Label::class, 'issue_label');
     }
 
-    // mutator to ensure issue code is always uppercase
-     public function setCodeAttribute($value)
+    /**
+     * Mutator to ensure issue code is always uppercase
+     * 
+     * @param string $value
+     * @return void
+     */
+    public function setCodeAttribute($value)
     {
         $this->attributes['code'] = strtoupper($value);
     }
 
-    // Accessor: show title trimmed/normalized
+    /**
+     * Accessor to show title trimmed/normalized
+     * 
+     * @param string $value
+     * @return string
+     */
     public function getTitleAttribute($value)
     {
         return ucfirst($value);
     }
 
-    // Local scopes per brief
+    /**
+     * Scope a query to only include open issues
+     * 
+     * @param \Illuminate\Database\Eloquent\Builder $q
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
     public function scopeOpen(Builder $q)
     {
         return $q->whereIn('status', ['open', 'in_progress', 'blocked']);
     }
 
-    // return issues with high or highest priority due in next 48 hours and still open
+    /**
+     * Scope a query to only include urgent issues
+     * 
+     * @param \Illuminate\Database\Eloquent\Builder $q
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
     public function scopeUrgent(Builder $q)
     {
         $now = now();
@@ -89,7 +134,12 @@ class Issue extends Model
             })->open();
     }
 
-    // Return issues along with the count of their comments
+    /**
+     * Scope a query to include the count of comments
+     * 
+     * @param \Illuminate\Database\Eloquent\Builder $q
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
     public function scopeCommentsCount(Builder $q)
     {
         return $q->withCount('comments');

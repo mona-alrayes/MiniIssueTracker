@@ -17,17 +17,33 @@ class Project extends Model
         'code',
     ];
 
+    /**
+     * Get all issues for the project
+     * 
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany<Issue>
+     */
     public function issues()
     {
         return $this->hasMany(Issue::class);
     }
 
+    /**
+     * Get all users associated with the project
+     * 
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany<User>
+     */
     public function users()
     {
         return $this->belongsToMany(User::class, 'project_user')->withPivot('role', 'contribution_hours', 'last_activity');
     }
 
     // Example: scope that returns projects with most open issues
+    /**
+     * Scope a query to order projects by most open issues
+     * 
+     * @param \Illuminate\Database\Eloquent\Builder $q
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
     public function scopeMostOpen(Builder $q)
     {
         return $q->withCount(['issues as open_issues_count' => function ($q) {
@@ -36,12 +52,24 @@ class Project extends Model
     }
 
     // mutator to ensure project code is always uppercase
+    /**
+     * Mutator to ensure project code is always uppercase
+     * 
+     * @param string $value
+     * @return void
+     */
     public function setCodeAttribute($value)
     {
         $this->attributes['code'] = strtoupper($value);
     }
 
     // Local scope to get projects with opened issues
+    /**
+     * Scope a query to only include projects with opened issues
+     * 
+     * @param \Illuminate\Database\Eloquent\Builder $q
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
     public function scopeOpenedIssues(Builder $q)
     {
         return $q->whereInRelation('issues', 'status', ['open', 'in_progress']);
