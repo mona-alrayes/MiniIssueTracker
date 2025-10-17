@@ -11,7 +11,7 @@ class UpdateUserRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,7 +22,19 @@ class UpdateUserRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'name' => 'sometimes|nullable|string|max:255',
+            'email' => 'sometimes|nullable|string|email|max:255|unique:users,email,' . $this->route('user')->id,
+            'password' => 'sometimes|nullable|string|min:8|confirmed',
+        ];
+    }
+
+    public function messages(): array
+    {
+        return [
+            'email.email' => 'Email must be a valid email address',
+            'email.unique' => 'Email has already been taken',
+            'password.min' => 'Password must be at least 8 characters',
+            'password.confirmed' => 'Password confirmation does not match',
         ];
     }
 }
