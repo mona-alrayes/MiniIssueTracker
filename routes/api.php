@@ -19,6 +19,9 @@ Route::apiResource('users' , UserController::class);
 Route::apiResource('issues' , IssueController::class);
 Route::apiResource('labels', LabelController::class);
 
+Route::get('/issues/opened', [IssueController::class, 'openedIssues']);
+Route::get('/issues/urgent', [IssueController::class, 'urgentIssues']);
+
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('projects/{project}/users', [ProjectUserController::class, 'addingUserToProject']);
     Route::delete('projects/{project}/users', [ProjectUserController::class, 'removingUserFromProject']);
