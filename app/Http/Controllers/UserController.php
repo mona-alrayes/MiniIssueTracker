@@ -22,7 +22,7 @@ class UserController extends Controller
     public function store(StoreUserRequest $request)
     {
         $user = User::create($request->validated());
-        return self::success($user, null , 'user created successfully', 201);   
+        return self::success($user,'user created successfully', 201);   
     }
 
     /**
@@ -30,7 +30,7 @@ class UserController extends Controller
      */
     public function show(User $user)
     {
-        return self::success($user, null , 'user been retrived successfully', 200);
+        return self::success($user,'user been retrived successfully', 200);
     }
 
     /**
@@ -39,7 +39,7 @@ class UserController extends Controller
     public function update(Request $request, User $user)
     {
         $user = User::update($request->validated());
-        return self::success($user, null , 'user updated successfully', 200);
+        return self::success($user, 'user updated successfully', 200);
     }
 
     /**
@@ -48,6 +48,6 @@ class UserController extends Controller
     public function destroy(User $user)
     {
         $user->delete();
-        return self::success(null, null , 'user deleted successfully', 200);
+        return self::success(null,'user deleted successfully', 200);
     }
 }

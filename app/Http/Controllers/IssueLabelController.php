@@ -30,7 +30,7 @@ class IssueLabelController extends Controller
     {
         $labelIds = $request->validated()['label_ids'];
         $labels = $this->service->attach($issue, $labelIds);
-        return self::success($labels , null , 'labels been attached to the issue successfully' , 200);
+        return self::success($labels ,'labels been attached to the issue successfully' , 200);
     }
 
     /**
@@ -44,7 +44,7 @@ class IssueLabelController extends Controller
     {
         $labelIds = $request->validated()['label_ids'];
         $labels = $this->service->sync($issue, $labelIds);
-        return self::success($labels , null , 'labels been sync with issue successfully' , 200);
+        return self::success($labels , 'labels been sync with issue successfully' , 200);
     }
 
     /**
@@ -57,7 +57,7 @@ class IssueLabelController extends Controller
     public function detach(Project $project, Issue $issue, int $labelId)
     {
         $this->service->detach($issue, $labelId);
-        return self::success(null , null , 'labels been removed from the issue successfully', 204);
+        return self::success(null ,'labels been removed from the issue successfully', 204);
     }
     
 }
