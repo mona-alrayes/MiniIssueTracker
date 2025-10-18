@@ -3,6 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Issue;
+use App\Models\User;
+use App\Models\Project;
+use App\Services\Issue\IssueService;
 use App\Http\Requests\StoreIssueRequest;
 use App\Http\Requests\UpdateIssueRequest;
 
@@ -13,6 +16,13 @@ use App\Http\Requests\UpdateIssueRequest;
  */
 class IssueController extends Controller
 {
+    protected $issueService;
+
+    public function __construct(IssueService $issueService)
+    {
+        $this->issueService = $issueService;
+    }
+
     /**
      * Display a paginated list of issues
      * 
@@ -144,6 +154,50 @@ class IssueController extends Controller
         return self::success(
             Issue::urgent()->with(['project', 'assignee'])->paginate(10),
             'Urgent issues retrieved successfully',
+            200
+        );
+    }
+
+    /**
+     * Get count of completed issues for a user
+     * 
+     * @urlParam user int required The ID of the user. Example: 1
+     * @response 200 {
+     *   "data": {"completed_issues_count": 5},
+     *   "message": "Completed issues count retrieved successfully",
+     *   "status": 200
+     * }
+     * @param User $user
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function completedIssuesCountOfUser(User $user)
+    {
+        $count = $this->issueService->getCompletedIssuesCount($user);
+        return self::success(
+            ['completed_issues_count' => $count],
+            'Completed issues count retrieved successfully',
+            200
+        );
+    }
+
+    /**
+     * Get opened issues for a specific project
+     * 
+     * @urlParam project int required The ID of the project. Example: 1
+     * @response 200 {
+     *   "data": [{"id": 1, "title": "..."}],
+     *   "message": "Opened issues of project retrieved successfully",
+     *   "status": 200
+     * }
+     * @param Project $project
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function openIssuesOfProject(Project $project)
+    {
+        $issues = $this->issueService->getOpenIssuesForProject($project);
+        return self::success(
+            $issues,
+            'Opened issues of project retrieved successfully',
             200
         );
     }
