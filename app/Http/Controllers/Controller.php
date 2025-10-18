@@ -2,17 +2,20 @@
 
 namespace App\Http\Controllers;
 
-abstract class Controller
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
+use Illuminate\Foundation\Bus\DispatchesJobs;
+use Illuminate\Foundation\Validation\ValidatesRequests;
+use Illuminate\Routing\Controller as BaseController;
+use App\Models\Project;
+
+/**
+ * Base controller for the application.
+ */
+abstract class Controller extends BaseController
 {
-    /**
-     * Return a successful JSON response.
-     *
-     * @param mixed $data The data to be returned in the response.
-     * @param string $message The success message.
-     * @param int $status The HTTP status code.
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public static function success($data = null, $message = 'Done Successfully!', $status = 200): \Illuminate\Http\JsonResponse
+    use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
+
+    public static function success($data = null, $message = 'Done Successfully!', int $status = 200): \Illuminate\Http\JsonResponse
     {
         return response()->json([
             'status' => 'success',
@@ -21,15 +24,7 @@ abstract class Controller
         ], $status);
     }
 
-    /**
-     * Return an error JSON response.
-     *
-     * @param mixed $data The data to be returned in the response.
-     * @param string $message The error message.
-     * @param int $status The HTTP status code.
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public static function error($data = null, $message = 'Operation failed!', $status = 400): \Illuminate\Http\JsonResponse
+    public static function error($data = null, $message = 'Operation failed!', int $status = 400): \Illuminate\Http\JsonResponse
     {
         return response()->json([
             'status' => 'error',
@@ -39,21 +34,22 @@ abstract class Controller
     }
 
     /**
-     * Generates a JSON response with paginated data.
+     * Paginated response helper.
      *
-     * Transforms the paginated items using the provided resource class and
-     * returns the transformed data along with pagination information.
-     *
-     * @param \Illuminate\Pagination\LengthAwarePaginator $paginator The paginator instance containing the items.
-     * @param string $resourceClass The resource class used to transform the paginated items.
-     * @param string $message Optional message to be included in the response.
-     * @param int $status HTTP status code.
-     *
+     * @param \Illuminate\Pagination\LengthAwarePaginator $paginator
+     * @param string|null $resourceClass
+     * @param string $message
+     * @param int $status
      * @return \Illuminate\Http\JsonResponse
      */
-    public static function paginated( $paginator, $resourceClass = null, $message = '', $status)
+    public static function paginated($paginator, ?string $resourceClass = null, string $message = '', int $status = 200): \Illuminate\Http\JsonResponse
     {
-        $transformedItems = is_null($resourceClass) ? $paginator->items() : $resourceClass::collection($paginator->items());
+        // prefer getting the underlying collection from paginator
+        $items = $paginator->getCollection();
+
+        $transformedItems = is_null($resourceClass)
+            ? $items
+            : $resourceClass::collection($items);
 
         return response()->json([
             'status' => 'success',
@@ -71,15 +67,12 @@ abstract class Controller
         ], $status);
     }
 
-    /**
-     * Resolve project from route with model binding
-     */
-    protected function resolveProject($project)
+    protected function resolveProject($project): Project
     {
         if ($project instanceof Project) {
             return $project;
         }
-        
+
         return Project::findOrFail($project);
     }
 }
