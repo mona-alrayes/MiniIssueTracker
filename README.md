@@ -16,6 +16,7 @@ A comprehensive RESTful API for managing projects, issues, labels, and comments.
 - [Installation](#-installation)
 - [Database Setup](#-database-setup)
 - [Running the Application](#-running-the-application)
+- [Artisan Commands](#-artisan-commands)
 - [API Documentation](#-api-documentation)
 - [Project Structure](#-project-structure)
 - [Database Schema](#-database-schema)
@@ -38,6 +39,7 @@ A comprehensive RESTful API for managing projects, issues, labels, and comments.
 - **Label System** - Categorize issues with customizable labels and colors
 - **Comments** - Threaded comments on issues for team collaboration
 - **Team Collaboration** - Assign users to projects with specific roles (developer, manager, tester)
+- **Contribution Reports** - Generate detailed contribution reports with user hours and activity tracking
 
 ### Advanced Features
 - **JWT Authentication** - Secure token-based authentication using tymon/jwt-auth
@@ -50,6 +52,8 @@ A comprehensive RESTful API for managing projects, issues, labels, and comments.
 - **Request Validation** - Form request validation for all inputs
 - **Service Layer** - Business logic separated into service classes
 - **Database Seeders** - Realistic fake data for testing
+- **Custom Artisan Commands** - Automated report generation and task scheduling
+- **Activity Tracking Middleware** - Automatic user contribution and activity tracking
 
 ---
 
@@ -235,6 +239,133 @@ php artisan serve --host=0.0.0.0 --port=8000
 
 ---
 
+## ⚙️ Artisan Commands
+
+The application includes custom Artisan commands for various operations.
+
+### Generate Contribution Reports
+
+Generate contribution reports for all projects:
+
+```bash
+php artisan reports:contributions
+```
+
+**What it does:**
+- Generates detailed contribution reports for each project
+- Includes user contribution hours and last activity timestamps
+- Calculates team member roles and participation
+- Saves reports as JSON files in `storage/app/reports/`
+
+**Output Example:**
+```json
+{
+    "project_id": 1,
+    "project_name": "E-Commerce Platform",
+    "project_code": "ECOM",
+    "total_contributors": 5,
+    "contributors": [
+        {
+            "user_id": 2,
+            "name": "John Doe",
+            "role": "developer",
+            "contribution_hours": 120,
+            "last_activity": "2025-10-15 14:30:00"
+        }
+    ]
+}
+```
+
+**Report Location**: `storage/app/reports/project_{id}_contributions.json`
+
+### Scheduling Reports (Optional)
+
+To run reports automatically on a schedule, add to `app/Console/Kernel.php`:
+
+```php
+protected function schedule(Schedule $schedule)
+{
+    // Run daily at midnight
+    $schedule->command('reports:contributions')->daily();
+    
+    // Or run every hour
+    $schedule->command('reports:contributions')->hourly();
+    
+    // Or run weekly on Monday
+    $schedule->command('reports:contributions')->weekly()->mondays();
+}
+```
+
+Then run the Laravel scheduler:
+
+```bash
+# For development (keeps running)
+php artisan schedule:work
+
+# For production (add to cron)
+* * * * * cd /path-to-your-project && php artisan schedule:run >> /dev/null 2>&1
+```
+
+### Other Useful Commands
+
+**Database Commands:**
+```bash
+# Run migrations
+php artisan migrate
+
+# Rollback last migration
+php artisan migrate:rollback
+
+# Reset and re-run all migrations
+php artisan migrate:fresh
+
+# Run migrations with seeders
+php artisan migrate:fresh --seed
+
+# Run only seeders
+php artisan db:seed
+
+# Run specific seeder
+php artisan db:seed --class=UserSeeder
+```
+
+**Cache Commands:**
+```bash
+# Clear all caches
+php artisan optimize:clear
+
+# Clear specific caches
+php artisan config:clear
+php artisan cache:clear
+php artisan route:clear
+php artisan view:clear
+
+# Cache for production
+php artisan config:cache
+php artisan route:cache
+php artisan view:cache
+```
+
+**JWT Commands:**
+```bash
+# Generate JWT secret
+php artisan jwt:secret
+```
+
+**Application Commands:**
+```bash
+# Generate application key
+php artisan key:generate
+
+# List all routes
+php artisan route:list
+
+# List all available commands
+php artisan list
+```
+
+---
+
 ## 📚 API Documentation
 
 ### Base URL
@@ -346,6 +477,9 @@ MiniIssueTracker/
 │   │   ├── DueWindowCast.php
 │   │   ├── PriorityCast.php
 │   │   └── StatusCast.php
+│   ├── Console/
+│   │   └── Commands/             # Custom Artisan commands
+│   │       └── GenerateContributionReports.php
 │   ├── Enums/                    # Enum classes
 │   │   ├── PriorityType.php
 │   │   └── StatusType.php
@@ -360,6 +494,8 @@ MiniIssueTracker/
 │   │   │   ├── ProjectController.php
 │   │   │   ├── ProjectUserController.php
 │   │   │   └── UserController.php
+│   │   ├── Middleware/           # Custom middleware
+│   │   │   └── TrackProjectActivity.php
 │   │   └── Requests/             # Form request validation
 │   │       ├── Comment/
 │   │       ├── IssueLabel/
@@ -620,6 +756,50 @@ Business logic is separated into service classes:
 - `IssueLabelService` - Label attachment logic
 - `ProjectService` - Project and user management
 - `CommentService` - Comment operations
+
+### Automatic Activity Tracking
+
+The application includes middleware that automatically tracks user contributions to projects:
+
+**How it works:**
+- `TrackProjectActivity` middleware runs on all API requests
+- Automatically records contribution time for project-related activities
+- Updates `contribution_hours` in the `project_user` pivot table
+- Tracks `last_activity` timestamp for each user-project relationship
+
+**What gets tracked:**
+- Only successful API responses (2xx status codes)
+- Only requests that involve a project (route parameter)
+- Minimum 1-minute threshold to avoid tracking trivial requests
+- Request duration is calculated and converted to hours
+
+**Implementation:**
+
+The middleware is registered in `bootstrap/app.php`:
+
+```php
+->withMiddleware(function (Middleware $middleware): void {
+    $middleware->api(append: [
+        \App\Http\Middleware\TrackProjectActivity::class
+    ]);
+})
+```
+
+**Contribution Recording:**
+
+```php
+// Automatically updates pivot table
+$project->users()->updateExistingPivot($user->id, [
+    'contribution_hours' => DB::raw("ROUND(contribution_hours + $hours, 4)"),
+    'last_activity' => now()
+]);
+```
+
+**Benefits:**
+- ✅ No manual tracking required
+- ✅ Accurate time tracking based on actual API usage
+- ✅ Automatic report generation with real data
+- ✅ Historical activity tracking per user per project
 
 ---
 
