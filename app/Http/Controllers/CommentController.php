@@ -9,7 +9,6 @@ use App\Models\Issue;
 use App\Models\Project;
 use App\Services\Comment\CommentService;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 
 class CommentController extends Controller

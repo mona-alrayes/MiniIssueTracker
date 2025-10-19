@@ -11,7 +11,7 @@ class UpdateLabelRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,7 +22,18 @@ class UpdateLabelRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'name' => 'sometimes|string|unique:labels,name,' . $this->label->id . '|max:255',
+            'color' => 'sometimes|nullable|string|max:255',
+        ];
+    }
+
+    /**
+     * Get custom messages for validator errors.
+     */
+    public function messages(): array
+    {
+        return [
+            'name.unique' => 'This label name already exists.',
         ];
     }
 }

@@ -11,7 +11,7 @@ class UpdateIssueRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,7 +22,27 @@ class UpdateIssueRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'title' => 'sometimes|string|max:255',
+            'description' => 'sometimes|nullable|string',
+            'status' => 'sometimes|string|in:open,in_progress,blocked,completed,closed',
+            'priority' => 'sometimes|string|in:lowest,low,medium,high,highest',
+            'assigned_to' => 'sometimes|nullable|exists:users,id',
+            'code' => 'sometimes|string|unique:issues,code,' . $this->issue->id . '|max:255',
+            'due_window' => 'sometimes|nullable|json',
+            'status_change_at' => 'sometimes|nullable|date',
+        ];
+    }
+
+    /**
+     * Get custom messages for validator errors.
+     */
+    public function messages(): array
+    {
+        return [
+            'status.in' => 'Status must be one of: open, in_progress, blocked, completed, closed.',
+            'priority.in' => 'Priority must be one of: lowest, low, medium, high, highest.',
+            'assigned_to.exists' => 'The selected assignee does not exist.',
+            'code.unique' => 'This issue code already exists.',
         ];
     }
 }

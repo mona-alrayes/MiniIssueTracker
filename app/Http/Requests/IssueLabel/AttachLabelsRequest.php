@@ -28,7 +28,7 @@ class AttachLabelsRequest extends FormRequest
         }
 
         // Allow only the reporter (creator) to attach labels
-        return $this->user() && $this->user()->id === $issue->reporter_id;
+        return $this->user() && $this->user()->id === $issue->created_by;
     }
 
     /**
