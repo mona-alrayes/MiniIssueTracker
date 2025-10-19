@@ -25,7 +25,7 @@ class IssueController extends Controller
 
     /**
      * Display a paginated list of issues
-     * 
+     *
      * @response 200 {
      *   "data": ["..."],
      *   "message": "issues been retrieved successfully",

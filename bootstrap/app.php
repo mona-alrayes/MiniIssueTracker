@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Foundation\Application;
+use App\Exceptions\Renderers\ApiExceptionRenderer;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
 
@@ -17,5 +18,11 @@ return Application::configure(basePath: dirname(__DIR__))
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
-        //
+        $exceptions->render(function (\Illuminate\Http\Request $request, \Throwable $exception) {
+            if ($exception instanceof \App\Exceptions\ApiException) {
+                return response()->json([
+                    'error' => $exception->getMessage(),
+                ], $exception->getStatusCode());
+            }
+        });
     })->create();
