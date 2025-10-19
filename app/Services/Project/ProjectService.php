@@ -2,10 +2,11 @@
 
 namespace App\Services\Project;
 
-use App\Exceptions\ProjectOperationException;
-use App\Models\Project;
 use App\Models\User;
+use App\Models\Project;
+use App\Exceptions\ApiException;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 /**
  * Service layer for project-related operations
@@ -56,7 +57,7 @@ class ProjectService
                 return true;
             });
         } catch (\Exception $e) {
-            throw new ProjectOperationException('Failed to attach user to project');
+            throw new ApiException('Failed to attach user to project');
         }
     }
 
@@ -76,7 +77,7 @@ class ProjectService
                 return true;
             });
         } catch (\Exception $e) {
-            throw new ProjectOperationException('Failed to detach user from project');
+            throw new ApiException('Failed to detach user from project');
         }
     }
 
@@ -87,13 +88,19 @@ class ProjectService
     {
         try {
             $hours = $minutes / 60;
-            
+
             $project->users()->updateExistingPivot($user->id, [
                 'contribution_hours' => DB::raw("ROUND(contribution_hours + $hours, 4)"),
                 'last_activity' => now()
             ]);
         } catch (\Exception $e) {
-            \Log::error("Contribution tracking failed: {$e->getMessage()}");
+
+            Log::error('Error recording contribution', [
+                'project_id' => $project->id,
+                'user_id' => $user->id,
+                'minutes' => $minutes,
+                'error' => $e->getMessage()
+            ]);
         }
     }
 

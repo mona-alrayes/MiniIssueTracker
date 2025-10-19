@@ -11,7 +11,7 @@ class StoreCommentRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return true; // Or use auth()->check() if you prefer
+        return true; 
     }
 
     /**

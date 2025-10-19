@@ -5,7 +5,7 @@ namespace App\Services;
 use App\Models\Issue;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\QueryException;
-use App\Exceptions\LabelOperationException;
+use App\Exceptions\ApiException;
 
 /**
  * Handles operations related to issue-label relationships
@@ -28,7 +28,7 @@ class IssueLabelService
                 return $issue->load('labels')->labels;
             });
         } catch (QueryException $e) {
-            throw new LabelOperationException('Failed to attach labels');
+            throw new ApiException('Failed to attach labels');
         }
     }
 
@@ -46,7 +46,7 @@ class IssueLabelService
                 $issue->labels()->detach($labelId);
             });
         } catch (QueryException $e) {
-            throw new LabelOperationException('Failed to detach label');
+            throw new ApiException('Failed to detach label', $e->getCode());
         }
     }
 
@@ -66,7 +66,7 @@ class IssueLabelService
                 return $issue->load('labels')->labels;
             });
         } catch (QueryException $e) {
-            throw new LabelOperationException('Failed to sync labels');
+            throw new ApiException('Failed to sync labels', $e->getCode());
         }
     }
 }

@@ -4,7 +4,7 @@ namespace App\Services\Issue;
 
 use App\Models\User;
 use App\Models\Project;
-use App\Exceptions\IssueOperationException;
+use App\Exceptions\ApiException;
 
 class IssueService
 {
@@ -13,14 +13,14 @@ class IssueService
      * 
      * @param User $user
      * @return int
-     * @throws IssueOperationException
+     * @throws ApiException
      */
     public function getCompletedIssuesCount(User $user): int
     {
         try {
             return $user->withCompletedIssuesCount()->completed_issues_count;
         } catch (\Exception $e) {
-            throw new IssueOperationException('Failed to get completed issues count');
+            throw new ApiException('Failed to get completed issues count', $e->getCode());
         }
     }
 
@@ -38,7 +38,7 @@ class IssueService
                 ->with(['project', 'assignee'])
                 ->paginate(10);
         } catch (\Exception $e) {
-            throw new IssueOperationException('Failed to get opened issues for project');
+            throw new ApiException('Failed to get opened issues for project', $e->getCode());
         }
     }
 }
