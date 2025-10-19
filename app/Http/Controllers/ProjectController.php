@@ -13,7 +13,7 @@ class ProjectController extends Controller
      */
     public function index()
     {
-        return self::paginated(Project::paginate(10) , null ,'projects been retrived successfully', 200);
+        return self::paginated(Project::paginate(10), null, 'Projects retrieved successfully', 200);
     }
 
     /**
@@ -22,7 +22,7 @@ class ProjectController extends Controller
     public function store(StoreProjectRequest $request)
     {
         $project = Project::create($request->validated());
-        return self::success($project , 'project been created successfully', 201);
+        return self::success($project, 'Project created successfully', 201);
     }
 
     /**
@@ -30,7 +30,7 @@ class ProjectController extends Controller
      */
     public function show(Project $project)
     {
-        return self::success($project , 'project been retrived successfully', 200);
+        return self::success($project, 'Project retrieved successfully', 200);
     }
 
     /**
@@ -39,7 +39,7 @@ class ProjectController extends Controller
     public function update(UpdateProjectRequest $request, Project $project)
     {
         $project->update($request->validated());
-        return self::success($project , 'project been updated successfully', 200);
+        return self::success($project, 'Project updated successfully', 200);
     }
 
     /**
@@ -48,7 +48,7 @@ class ProjectController extends Controller
     public function destroy(Project $project)
     {
         $project->delete();
-        return self::success(null , 'project been deleted successfully', 200);
+        return self::success(null, 'Project deleted successfully', 200);
     }
 
 }

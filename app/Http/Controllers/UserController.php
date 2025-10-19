@@ -13,7 +13,7 @@ class UserController extends Controller
      */
     public function index()
     {
-        return self::paginated(User::paginated(10), null , 'users been retrived successfully', 200);
+        return self::paginated(User::paginate(10), null, 'Users retrieved successfully', 200);
     }
 
     /**
@@ -22,7 +22,7 @@ class UserController extends Controller
     public function store(StoreUserRequest $request)
     {
         $user = User::create($request->validated());
-        return self::success($user,'user created successfully', 201);   
+        return self::success($user, 'User created successfully', 201);   
     }
 
     /**
@@ -30,7 +30,7 @@ class UserController extends Controller
      */
     public function show(User $user)
     {
-        return self::success($user,'user been retrived successfully', 200);
+        return self::success($user, 'User retrieved successfully', 200);
     }
 
     /**
@@ -38,8 +38,8 @@ class UserController extends Controller
      */
     public function update(Request $request, User $user)
     {
-        $user = User::update($request->validated());
-        return self::success($user, 'user updated successfully', 200);
+        $user->update($request->validated());
+        return self::success($user, 'User updated successfully', 200);
     }
 
     /**
@@ -48,6 +48,6 @@ class UserController extends Controller
     public function destroy(User $user)
     {
         $user->delete();
-        return self::success(null,'user deleted successfully', 200);
+        return self::success(null, 'User deleted successfully', 200);
     }
 }

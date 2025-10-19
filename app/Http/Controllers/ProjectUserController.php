@@ -3,8 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Http\Requests\AddingUserToProjectRequest;
-use App\Http\Requests\RemovingUserFromProjectRequest;
+use App\Http\Requests\Project\AddingUserToProjectRequest;
+use App\Http\Requests\Project\RemoveUserToProjectRequest;
 use App\Models\Project;
 use App\Services\Project\ProjectService;
 
@@ -38,11 +38,11 @@ class ProjectUserController extends Controller
     /**
      * Remove a user from a project
      * 
-     * @param RemovingUserFromProjectRequest $request Validated request containing user_id
+     * @param RemoveUserToProjectRequest $request Validated request containing user_id
      * @param Project $project The project to remove the user from
      * @return \Illuminate\Http\JsonResponse
      */
-    public function removingUserFromProject(RemovingUserFromProjectRequest $request, Project $project)
+    public function removingUserFromProject(RemoveUserToProjectRequest $request, Project $project)
     {
         $validatedRequest = $request->validated();
         $this->projectService->detachUserFromProject($project, $validatedRequest['user_id']);
