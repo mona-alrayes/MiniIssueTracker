@@ -49,9 +49,7 @@ class ProjectService
     {
         try {
             return DB::transaction(function () use ($project, $userData) {
-                $project->users()->attach([
-                    'project_id' => $project->id,
-                    'user_id' => $userData['user_id'],
+                $project->users()->attach($userData['user_id'], [
                     'role' => $userData['role']
                 ]);
                 return true;

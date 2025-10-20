@@ -192,9 +192,9 @@ class IssueController extends Controller
      * @param Project $project
      * @return \Illuminate\Http\JsonResponse
      */
-    public function openIssuesOfProject(Project $project)
+    public function openIssuesOfProjects(Project $project)
     {
-        $issues = $this->issueService->getOpenIssuesForProject($project);
+        $issues = $this->issueService->getOpenIssuesForProjects($project);
         return self::success(
             $issues,
             'Opened issues of project retrieved successfully',

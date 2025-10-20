@@ -18,7 +18,11 @@ class IssueService
     public function getCompletedIssuesCount(User $user): int
     {
         try {
-            return $user->withCompletedIssuesCount()->completed_issues_count;
+            return User::withCompletedIssuesCount()
+                ->where('id', $user->id)
+                ->first()
+                ->completed_issues_count;
+
         } catch (\Exception $e) {
             throw new ApiException('Failed to get completed issues count', 500);
         }
@@ -31,10 +35,10 @@ class IssueService
      * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator
      * @throws ApiException
      */
-    public function getOpenIssuesForProject(Project $project)
+    public function getOpenIssuesForProjects(Project $project)
     {
         try {
-            return $project->withOpenedIssues()->paginate(10);
+            return $project::withOpenedIssues()->paginate(10);
         } catch (\Exception $e) {
             throw new ApiException('Failed to get opened issues for project', 500);
         }

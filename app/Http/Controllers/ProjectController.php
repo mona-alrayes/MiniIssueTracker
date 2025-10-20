@@ -51,4 +51,35 @@ class ProjectController extends Controller
         return self::success(null, 'Project deleted successfully', 200);
     }
 
+    /**
+     * Get opened issues for a project
+     * 
+     * @urlParam project int required The ID of the project. Example: 1
+     * @response 200 {
+     *   "data": [{"id": 1, "title": "..."}],
+     *   "message": "Opened issues retrieved successfully",
+     *   "status": 200
+     * }
+     * @param Project $project
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function openedIssues(Project $project)
+    {
+        return self::paginated($project->openedIssues()->paginate(10), null, 'Opened issues retrieved successfully', 200);
+    }
+
+    /**
+     * Get opened issues for all projects
+     * 
+     * @response 200 {
+     *   "data": [{"id": 1, "title": "..."}],
+     *   "message": "Opened issues retrieved successfully",
+     *   "status": 200
+     * }
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function openedIssuesForAllProjects()
+    {
+        return self::paginated(Project::withOpenedIssues()->paginate(10), null, 'Opened issues retrieved successfully', 200);
+    }
 }
