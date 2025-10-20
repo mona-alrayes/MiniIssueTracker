@@ -31,71 +31,75 @@ class Handler extends ExceptionHandler
     {
         // ApiException (custom service exception)
         $this->renderable(function (ApiException $e, $request) {
-            Log::error($e->getMessage(), ['trace'=>$e->getTraceAsString()]);
+            Log::error($e->getMessage(), ['trace' => $e->getTraceAsString()]);
             return $this->formatErrorResponse($e->getMessage(), $e->getStatusCode());
         });
 
         // Model or route not found
         $this->renderable(function ($e, $request) {
             if ($e instanceof ModelNotFoundException || $e instanceof NotFoundHttpException) {
-                Log::error($e->getMessage(), ['trace'=>$e->getTraceAsString()]);
+                Log::error($e->getMessage(), ['trace' => $e->getTraceAsString()]);
                 return $this->formatErrorResponse('The requested model was not found.', 404);
             }
         });
 
         // Method not allowed
         $this->renderable(function (MethodNotAllowedHttpException $e, $request) {
-            Log::error($e->getMessage(), ['trace'=>$e->getTraceAsString()]);
+            Log::error($e->getMessage(), ['trace' => $e->getTraceAsString()]);
             return $this->formatErrorResponse('The HTTP method is not allowed for this route.', 405);
         });
 
         // Access denied / unauthorized
         $this->renderable(function ($e, $request) {
             if ($e instanceof UnauthorizedHttpException || $e instanceof AccessDeniedHttpException || $e instanceof AuthorizationException) {
-                Log::error($e->getMessage(), ['trace'=>$e->getTraceAsString()]);
+                Log::error($e->getMessage(), ['trace' => $e->getTraceAsString()]);
                 return $this->formatErrorResponse('You do not have permission to access this resource.', 403);
             }
         });
 
         // Authentication
         $this->renderable(function (AuthenticationException $e, $request) {
-            Log::error($e->getMessage(), ['trace'=>$e->getTraceAsString()]);
+            Log::error($e->getMessage(), ['trace' => $e->getTraceAsString()]);
             return $this->formatErrorResponse('Unauthenticated, please login.', 401);
         });
 
         // Too many requests
         $this->renderable(function (ThrottleRequestsException $e, $request) {
-            Log::error($e->getMessage(), ['trace'=>$e->getTraceAsString()]);
+            Log::error($e->getMessage(), ['trace' => $e->getTraceAsString()]);
             return $this->formatErrorResponse('Too many requests. Please slow down.', 429);
         });
 
         // Bad request
         $this->renderable(function (BadRequestHttpException $e, $request) {
-            Log::error($e->getMessage(), ['trace'=>$e->getTraceAsString()]);
+            Log::error($e->getMessage(), ['trace' => $e->getTraceAsString()]);
             return $this->formatErrorResponse('Bad request. Please check your input.', 400);
         });
 
         // Unsupported media type
         $this->renderable(function (UnsupportedMediaTypeHttpException $e, $request) {
-            Log::error($e->getMessage(), ['trace'=>$e->getTraceAsString()]);
+            Log::error($e->getMessage(), ['trace' => $e->getTraceAsString()]);
             return $this->formatErrorResponse('Unsupported media type.', 415);
         });
 
         // Query exception
         $this->renderable(function (QueryException $e, $request) {
-            Log::error($e->getMessage(), ['trace'=>$e->getTraceAsString()]);
+            Log::error($e->getMessage(), ['trace' => $e->getTraceAsString()]);
             return $this->formatErrorResponse('A database query error occurred.', 500);
         });
 
         // Generic Exception
         $this->renderable(function (\Exception $e, $request) {
-            Log::error($e->getMessage(), ['trace'=>$e->getTraceAsString()]);
+            Log::error($e->getMessage(), ['trace' => $e->getTraceAsString()]);
 
             if (config('app.debug')) {
-                return parent::render($request, $e); // full debug info in local
+                $message = $e instanceof \App\Exceptions\ApiException ? $e->getMessage() : $e->getMessage();
+                $status = ($e instanceof \App\Exceptions\ApiException) ? $e->getStatusCode() : 500;
+
+                return $this->formatErrorResponse($message ?: 'An unexpected error occurred.', $status);
             }
 
             return $this->formatErrorResponse('An unexpected error occurred.', 500);
+
         });
     }
 

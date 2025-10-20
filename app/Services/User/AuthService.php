@@ -47,17 +47,30 @@ class AuthService
      */
     public function login(array $credentials)
     {
-        $credentials = [
-            'email' => $credentials['email'],
-            'password' => $credentials['password'],
+        // basic guard for missing fields
+        $email = $credentials['email'] ?? null;
+        $password = $credentials['password'] ?? null;
+
+        if (!$email || !$password) {
+            throw new ApiException('Email and password are required.', 422);
+        }
+
+        $creds = [
+            'email' => $email,
+            'password' => $password,
         ];
 
         try {
-            if (!$token = JWTAuth::attempt($credentials)) {
-                throw new ApiException('Invalid credentials', 401);
-            }
+            // attempt returns token on success, false on invalid credentials
+            $token = JWTAuth::attempt($creds);
         } catch (JWTException $e) {
+            // JWT library problem (signing, config, etc.)
             throw new ApiException('Could not create token', 500);
+        }
+
+        if (!$token) {
+            // invalid credentials — explicit and not swallowed by the catch
+            throw new ApiException('Invalid credentials', 401);
         }
 
         return [
