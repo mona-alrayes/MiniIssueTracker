@@ -19,16 +19,16 @@ Route::middleware('auth:api')->group(function () {
     Route::post('/auth/logout', [AuthController::class, 'logout']);
     Route::get('/projects/all-opened-issue', [ProjectController::class, 'openedIssuesForAllProjects']);
 
-    Route::apiResource('projects', ProjectController::class);
-    Route::apiResource('users', UserController::class);
-    Route::apiResource('issues', IssueController::class);
-    Route::apiResource('labels', LabelController::class);
-
-    // Custom endpoints
+    // Custom endpoints (must be before resource routes to avoid conflicts)
     Route::get('/issues/opened', [IssueController::class, 'openedIssues']);
     Route::get('/issues/urgent', [IssueController::class, 'urgentIssues']);
     Route::get('/users/{user}/completed-issues-count', [IssueController::class, 'completedIssuesCountOfUser']);
     Route::get('/projects/{project}/opened-issue', [ProjectController::class, 'openedIssues']);
+
+    Route::apiResource('projects', ProjectController::class);
+    Route::apiResource('users', UserController::class);
+    Route::apiResource('issues', IssueController::class);
+    Route::apiResource('labels', LabelController::class);
 
     // Project user management
     Route::post('projects/{project}/users', [ProjectUserController::class, 'addingUserToProject']);

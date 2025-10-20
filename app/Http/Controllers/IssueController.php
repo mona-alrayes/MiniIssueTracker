@@ -140,7 +140,7 @@ class IssueController extends Controller
     }
 
     /**
-     * Get all urgent issues (high priority + due within 48 hours)
+     * Get all urgent issues (priority: high/highest and status: open/in_progress)
      * 
      * @response 200 {
      *   "data": [{"id": 1, "title": "..."}],

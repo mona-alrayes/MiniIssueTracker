@@ -126,12 +126,8 @@ class Issue extends Model
      */
     public function scopeUrgent(Builder $q)
     {
-        $now = now();
-        $in48Hours = $now->copy()->addHours(48);
         return $q->whereIn('priority', ['high', 'highest'])
-            ->whereJsonContains('due_window->due_at', function ($query) use ($now, $in48Hours) {
-                $query->whereBetween($now, $in48Hours);
-            })->open();
+            ->whereIn('status', ['open', 'in_progress']);
     }
 
     /**
