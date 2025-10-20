@@ -2,7 +2,7 @@
 
 A comprehensive RESTful API for managing projects, issues, labels, and comments. Built with Laravel 11, this application provides a complete issue tracking system similar to GitHub Issues or Jira, featuring JWT authentication, advanced relationships, custom casts, and extensive API endpoints.
 
-[![Laravel](https://img.shields.io/badge/Laravel-11.x-red.svg)](https://laravel.com)
+[![Laravel](https://img.shields.io/badge/Laravel-12.x-red.svg)](https://laravel.com)
 [![PHP](https://img.shields.io/badge/PHP-8.2+-blue.svg)](https://php.net)
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
@@ -25,8 +25,6 @@ A comprehensive RESTful API for managing projects, issues, labels, and comments.
 - [Seeded Data](#-seeded-data)
 - [Advanced Features](#-advanced-features)
 - [Troubleshooting](#-troubleshooting)
-- [Contributing](#-contributing)
-- [License](#-license)
 
 ---
 
@@ -59,7 +57,7 @@ A comprehensive RESTful API for managing projects, issues, labels, and comments.
 
 ## 🛠 Tech Stack
 
-- **Framework**: Laravel 11.x
+- **Framework**: Laravel 12.x
 - **Language**: PHP 8.2+
 - **Database**: MySQL 8.0+ / PostgreSQL / SQLite
 - **Authentication**: JWT (tymon/jwt-auth)
@@ -526,7 +524,6 @@ MiniIssueTracker/
 ├── routes/
 │   └── api.php                   # API routes
 ├── .env.example                  # Environment template
-├── API_TESTING_SCENARIOS.md      # Complete API documentation
 └── README.md                     # This file
 ```
 
@@ -859,40 +856,4 @@ php artisan route:clear
 php artisan view:clear
 ```
 
----
 
-## 🤝 Contributing
-
-Contributions are welcome! Please follow these steps:
-
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
-
----
-
-## 📄 License
-
-This project is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
-
----
-
-## 📞 Support
-
-For issues, questions, or contributions, please:
-- Open an issue on GitHub
-- Contact: your-email@example.com
-
----
-
-## 🙏 Acknowledgments
-
-- Built with [Laravel](https://laravel.com)
-- JWT Authentication by [tymon/jwt-auth](https://github.com/tymondesigns/jwt-auth)
-- Inspired by GitHub Issues and Jira
-
----
-
-**Happy Coding! 🚀**
