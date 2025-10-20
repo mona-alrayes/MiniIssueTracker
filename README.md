@@ -1,8 +1,8 @@
 # 🎯 Mini Issue Tracker
 
-A comprehensive RESTful API for managing projects, issues, labels, and comments. Built with Laravel 11, this application provides a complete issue tracking system similar to GitHub Issues or Jira, featuring JWT authentication, advanced relationships, custom casts, and extensive API endpoints.
+A comprehensive RESTful API for managing projects, issues, labels, and comments. Built with Laravel 12, this application provides a complete issue tracking system similar to GitHub Issues or Jira, featuring JWT authentication, advanced relationships, custom casts, and extensive API endpoints.
 
-[![Laravel](https://img.shields.io/badge/Laravel-12.x-red.svg)](https://laravel.com)
+[![Laravel](https://img.shields.io/badge/Laravel-11.x-red.svg)](https://laravel.com)
 [![PHP](https://img.shields.io/badge/PHP-8.2+-blue.svg)](https://php.net)
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
