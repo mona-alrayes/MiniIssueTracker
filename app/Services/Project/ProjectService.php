@@ -57,7 +57,7 @@ class ProjectService
                 return true;
             });
         } catch (\Exception $e) {
-            throw new ApiException('Failed to attach user to project');
+            throw new ApiException('Failed to attach user to project', 500);
         }
     }
 
@@ -77,7 +77,7 @@ class ProjectService
                 return true;
             });
         } catch (\Exception $e) {
-            throw new ApiException('Failed to detach user from project');
+            throw new ApiException('Failed to detach user from project', 500);
         }
     }
 

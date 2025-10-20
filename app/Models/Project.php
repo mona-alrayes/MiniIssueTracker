@@ -28,6 +28,16 @@ class Project extends Model
     }
 
     /**
+     * Get only opened issues for the project (relationship)
+     * 
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany<Issue>
+     */
+    public function openedIssues()
+    {
+        return $this->hasMany(Issue::class)->whereIn('status', ['open', 'in_progress']);
+    }
+
+    /**
      * Get all users associated with the project
      * 
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany<User>
@@ -63,15 +73,15 @@ class Project extends Model
         $this->attributes['code'] = strtoupper($value);
     }
 
-    // Local scope to get projects with opened issues
+    // Local scope to get projects that have opened issues
     /**
-     * Scope a query to only include projects with opened issues
+     * Scope a query to only include projects that have opened issues
      * 
      * @param \Illuminate\Database\Eloquent\Builder $q
      * @return \Illuminate\Database\Eloquent\Builder
      */
-    public function scopeOpenedIssues(Builder $q)
+    public function scopeWithOpenedIssues(Builder $q)
     {
-        return $q->whereInRelation('issues', 'status', ['open', 'in_progress']);
+        return $q->whereRelation('issues', 'status' , 'open');
     }
 }

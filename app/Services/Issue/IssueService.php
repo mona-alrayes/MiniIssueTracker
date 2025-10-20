@@ -20,7 +20,7 @@ class IssueService
         try {
             return $user->withCompletedIssuesCount()->completed_issues_count;
         } catch (\Exception $e) {
-            throw new ApiException('Failed to get completed issues count', $e->getCode());
+            throw new ApiException('Failed to get completed issues count', 500);
         }
     }
 
@@ -29,16 +29,14 @@ class IssueService
      * 
      * @param Project $project
      * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator
-     * @throws IssueOperationException
+     * @throws ApiException
      */
     public function getOpenIssuesForProject(Project $project)
     {
         try {
-            return $project->openedIssues()
-                ->with(['project', 'assignee'])
-                ->paginate(10);
+            return $project->withOpenedIssues()->paginate(10);
         } catch (\Exception $e) {
-            throw new ApiException('Failed to get opened issues for project', $e->getCode());
+            throw new ApiException('Failed to get opened issues for project', 500);
         }
     }
 }

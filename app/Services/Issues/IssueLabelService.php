@@ -28,7 +28,7 @@ class IssueLabelService
                 return $issue->load('labels')->labels;
             });
         } catch (QueryException $e) {
-            throw new ApiException('Failed to attach labels');
+            throw new ApiException('Failed to attach labels', 500);
         }
     }
 
@@ -46,7 +46,7 @@ class IssueLabelService
                 $issue->labels()->detach($labelId);
             });
         } catch (QueryException $e) {
-            throw new ApiException('Failed to detach label', $e->getCode());
+            throw new ApiException('Failed to detach label', 500);
         }
     }
 
@@ -66,7 +66,7 @@ class IssueLabelService
                 return $issue->load('labels')->labels;
             });
         } catch (QueryException $e) {
-            throw new ApiException('Failed to sync labels', $e->getCode());
+            throw new ApiException('Failed to sync labels', 500);
         }
     }
 }
