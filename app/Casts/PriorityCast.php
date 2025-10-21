@@ -26,7 +26,7 @@ class PriorityCast implements CastsAttributes
      *
      * @param  \Illuminate\Database\Eloquent\Model  $model
      * @param  string  $key
-     * @param  \App\Enums\PriorityType|null  $value
+     * @param  \App\Enums\PriorityType|null|string  $value
      * @param  array  $attributes
      * @return string|null
      */
@@ -36,10 +36,19 @@ class PriorityCast implements CastsAttributes
             return null;
         }
 
-        if (!$value instanceof PriorityType) {
-            throw new InvalidArgumentException('The given value is not an instance of PriorityType enum.');
+        if ($value instanceof PriorityType) {
+            return $value->value;
         }
 
-        return $value->value;
+        // If it's a string, try to convert it to PriorityType enum
+        if (is_string($value)) {
+            try {
+                return PriorityType::from($value)->value;
+            } catch (\ValueError $e) {
+                throw new InvalidArgumentException('The given value is not a valid PriorityType.');
+            }
+        }
+
+        throw new InvalidArgumentException('The given value is not an instance of PriorityType enum.');
     }
 }

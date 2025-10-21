@@ -114,7 +114,7 @@ class ProjectService
                 return [
                     'user' => $user->only(['id', 'name', 'email']),
                     'hours' => $user->pivot->contribution_hours,
-                    'last_active' => $user->pivot->last_activity->diffForHumans(),
+                    'last_active' => $user->pivot->last_activity ? \Carbon\Carbon::parse($user->pivot->last_activity)->diffForHumans() : 'Never',
                     'formatted_time' => $user->pivot->contribution_time
                 ];
             })->toArray();

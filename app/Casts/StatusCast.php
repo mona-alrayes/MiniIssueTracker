@@ -32,7 +32,16 @@ class StatusCast implements CastsAttributes
             return $value->value;
         }
 
-        throw new InvalidArgumentException('The given value is not a valid StatusType .');
+        // If it's a string, try to convert it to StatusType enum
+        if (is_string($value)) {
+            try {
+                return StatusType::from($value)->value;
+            } catch (\ValueError $e) {
+                throw new InvalidArgumentException('The given value is not a valid StatusType.');
+            }
+        }
+
+        throw new InvalidArgumentException('The given value is not a valid StatusType.');
     }
 }
 
