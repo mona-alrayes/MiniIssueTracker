@@ -20,16 +20,15 @@ class TrackProjectActivity
         if ($response->isSuccessful() && $project = $request->route('project')) {
             $user = $request->user();
             
-            // More precise API timing (uses request duration)
-            $durationMinutes = microtime(true) - LARAVEL_START;
-            $durationMinutes = round($durationMinutes / 60, 2); // Convert to minutes
-            
-            // Minimum 1 minute threshold for API calls
-            if ($durationMinutes >= 1) {
+            if ($user) {
+                // Track each successful request as 5 minutes of contribution
+                // This simulates active work on the project
+                $contributionMinutes = 5;
+                
                 app(ProjectService::class)->recordContribution(
                     $project,
                     $user,
-                    $durationMinutes
+                    $contributionMinutes
                 );
             }
         }
