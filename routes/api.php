@@ -44,5 +44,5 @@ Route::middleware('auth:api')->group(function () {
         ->only(['index', 'store', 'show', 'update', 'destroy'])
         ->shallow();
 
-    Route::get('projects/{project}/issues/{issue}/comments-count', [CommentController::class, 'IssueCommentsCount']);
+    Route::get('issues/{issue}/comments-count', [CommentController::class, 'IssueCommentsCount']);
 });

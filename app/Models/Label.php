@@ -21,6 +21,7 @@ class Label extends Model
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany<Issue>
      */
     public function issues(){
-        return $this->belongsToMany(Issue::class , 'issue_label');
+        return $this->belongsToMany(Issue::class , 'issue_label')
+            ->withTimestamps();
     }
 }

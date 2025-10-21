@@ -11,7 +11,7 @@ class UpdateCommentRequest extends FormRequest
     public function authorize(): bool
     {
         /** @var Comment $comment */
-        $comment = $this->route('comment'); // type hint helps VSCode
+        $comment = $this->route('comment'); 
 
         return Auth::check() && Auth::id() === $comment->user_id;
     }

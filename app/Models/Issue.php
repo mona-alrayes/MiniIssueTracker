@@ -82,7 +82,8 @@ class Issue extends Model
      */
     public function labels()
     {
-        return $this->belongsToMany(Label::class, 'issue_label');
+        return $this->belongsToMany(Label::class, 'issue_label')
+            ->withTimestamps();
     }
 
     /**

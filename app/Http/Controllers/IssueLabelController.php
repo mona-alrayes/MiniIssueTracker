@@ -16,7 +16,7 @@ class IssueLabelController extends Controller
      */
     public function __construct(private IssueLabelService $service)
     {
-        $this->middleware('auth:sanctum');
+       
     }
 
     /**
@@ -57,7 +57,7 @@ class IssueLabelController extends Controller
     public function detach(Project $project, Issue $issue, int $labelId)
     {
         $this->service->detach($issue, $labelId);
-        return self::success(null, 'Label removed from issue successfully', 204);
+        return self::success(null, 'Label removed from issue successfully', 200);
     }
     
 }

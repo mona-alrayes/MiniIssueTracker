@@ -33,21 +33,26 @@ class CommentController extends Controller
         return self::success($comment, 'Comment retrieved successfully', 200);
     }
 
-    public function update(UpdateCommentRequest $request, Project $project, Issue $issue, Comment $comment): JsonResponse
+    public function update(UpdateCommentRequest $request, Comment $comment): JsonResponse
     {
-        $updated = $this->commentService->updateComment($request->validated(), $project, $issue, $comment);
-        return self::success($updated, 'Comment updated successfully', 200);
+        $comment->update($request->validated());
+        return self::success($comment, 'Comment updated successfully', 200);
     }
 
-    public function destroy(Project $project, Issue $issue, Comment $comment): JsonResponse
+    public function destroy(Comment $comment): JsonResponse
     {
-        $this->commentService->deleteComment($project, $issue, $comment);
-        return self::success(null, 'Comment deleted successfully', 204);
+        $comment->delete();
+        return self::success(null, 'Comment deleted successfully', 200);
     }
 
     public function IssueCommentsCount(Project $project, Issue $issue): JsonResponse
     {
-        $count = $issue->commentsCount()->get();
-        return self::success($count, 'Comments count retrieved successfully', 200);
+        // Use the commentsCount scope on the Issue query builder
+        $issueWithCount = Issue::commentsCount()
+            ->find($issue->id);
+
+        return self::success([
+            'comments_count' => $issueWithCount->comments_count
+        ], 'Comments count retrieved successfully', 200);
     }
 }

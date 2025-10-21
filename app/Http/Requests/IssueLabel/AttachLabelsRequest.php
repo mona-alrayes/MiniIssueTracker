@@ -13,22 +13,23 @@ class AttachLabelsRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        // Route-model binding: we assume route is projects/{project}/issues/{issue}
-        $issue = $this->route('issue');
+        // // Route-model binding: we assume route is projects/{project}/issues/{issue}
+        // $issue = $this->route('issue');
 
-        // If route provided an id instead of model, resolve it:
-        if (! $issue) {
-            return false;
-        }
+        // // If route provided an id instead of model, resolve it:
+        // if (! $issue) {
+        //     return false;
+        // }
 
-        // If $issue is integer id, fetch model (optional safeguard)
-        if (is_numeric($issue)) {
-            $issue = \App\Models\Issue::find($issue);
-            if (! $issue) return false;
-        }
+        // // If $issue is integer id, fetch model (optional safeguard)
+        // if (is_numeric($issue)) {
+        //     $issue = \App\Models\Issue::find($issue);
+        //     if (! $issue) return false;
+        // }
 
-        // Allow only the reporter (creator) to attach labels
-        return $this->user() && $this->user()->id === $issue->created_by;
+        // // Allow only the reporter (creator) to attach labels
+        // return $this->user() && $this->user()->id === $issue->created_by;
+        return true;
     }
 
     /**

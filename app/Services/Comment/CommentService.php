@@ -10,7 +10,7 @@ use App\Models\User;
 
 class CommentService
 {
-    public function getComments(Project $project, Issue $issue): \Illuminate\Database\Eloquent\Collection
+    public function getComments(Project $project, Issue $issue)
     {
         if ($issue->project_id !== $project->id) {
             throw new ApiException('Issue not found in this project', 404);
@@ -42,23 +42,4 @@ class CommentService
         return $comment->load('user:id,name');
     }
 
-    public function updateComment(array $data, Project $project, Issue $issue, Comment $comment): Comment
-    {
-        if ($issue->project_id !== $project->id || $comment->issue_id !== $issue->id) {
-            throw new ApiException('Comment not found for this issue', 404);
-        }
-
-        $comment->update(['body' => $data['body'] ?? $comment->body]);
-
-        return $comment->refresh()->load('user:id,name');
-    }
-
-    public function deleteComment(Project $project, Issue $issue, Comment $comment): void
-    {
-        if ($issue->project_id !== $project->id || $comment->issue_id !== $issue->id) {
-            throw new ApiException('Comment not found for this issue', 404);
-        }
-
-        $comment->delete();
-    }
 }
