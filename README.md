@@ -2,6 +2,8 @@
 
 A comprehensive RESTful API for managing projects, issues, labels, and comments. Built with Laravel 12, this application provides a complete issue tracking system similar to GitHub Issues or Jira, featuring JWT authentication, advanced relationships, custom casts, and extensive API endpoints.
 
+postman collection at the button 👇
+
 [![Laravel](https://img.shields.io/badge/Laravel-11.x-red.svg)](https://laravel.com)
 [![PHP](https://img.shields.io/badge/PHP-8.2+-blue.svg)](https://php.net)
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
@@ -25,6 +27,7 @@ A comprehensive RESTful API for managing projects, issues, labels, and comments.
 - [Seeded Data](#-seeded-data)
 - [Advanced Features](#-advanced-features)
 - [Troubleshooting](#-troubleshooting)
+- [postman Collection](#-postman-collection).
 
 ---
 
@@ -856,4 +859,7 @@ php artisan route:clear
 php artisan view:clear
 ```
 
+## postman collection 
+
+https://documenter.getpostman.com/view/34416184/2sB3QRmmpb
 
