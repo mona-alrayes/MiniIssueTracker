@@ -87,17 +87,53 @@ class ProjectService
         try {
             $hours = $minutes / 60;
 
-            $project->users()->updateExistingPivot($user->id, [
-                'contribution_hours' => DB::raw("ROUND(contribution_hours + $hours, 4)"),
-                'last_activity' => now()
+            // Check if user is attached to project
+            $exists = $project->users()->where('user_id', $user->id)->exists();
+            
+            Log::info('Checking user attachment', [
+                'project_id' => $project->id,
+                'user_id' => $user->id,
+                'exists' => $exists ? 'yes' : 'no'
             ]);
+            
+            if ($exists) {
+                // Get current value before update
+                $currentPivot = DB::table('project_user')
+                    ->where('project_id', $project->id)
+                    ->where('user_id', $user->id)
+                    ->first();
+                
+                Log::info('Current pivot data', [
+                    'current_hours' => $currentPivot->contribution_hours ?? 'null',
+                    'adding_hours' => $hours
+                ]);
+                
+                // Update existing pivot record - using integer minutes instead
+                $affectedRows = $project->users()->updateExistingPivot($user->id, [
+                    'contribution_hours' => DB::raw("contribution_hours + " . (int)$minutes),
+                    'last_activity' => now()
+                ]);
+                
+                Log::info('Contribution recorded', [
+                    'project_id' => $project->id,
+                    'user_id' => $user->id,
+                    'minutes' => $minutes,
+                    'affected_rows' => $affectedRows
+                ]);
+            } else {
+                Log::warning('User not attached to project', [
+                    'project_id' => $project->id,
+                    'user_id' => $user->id,
+                    'message' => 'Cannot record contribution - user must be added to project first'
+                ]);
+            }
         } catch (\Exception $e) {
-
             Log::error('Error recording contribution', [
                 'project_id' => $project->id,
                 'user_id' => $user->id,
                 'minutes' => $minutes,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
             ]);
         }
     }
